@@ -1,0 +1,74 @@
+import java.util.Stack;
+
+public class TaskManager {
+    private Stack<Task> tasks = new Stack<>();
+
+    public void pushTask(Task t) {
+        tasks.push(t);
+        System.out.println("Pushed task " + t.getTaskId() + ": " + t.getDescription());
+    }
+
+    // Completes the most recently added task (LIFO)
+    public void popTask() {
+        if (tasks.isEmpty()) {
+            System.out.println("No tasks to complete.");
+            return;
+        }
+        Task done = tasks.pop();
+        System.out.println("Completed task " + done.getTaskId() + ": " + done.getDescription());
+    }
+
+    public void displayRemaining() {
+        if (tasks.isEmpty()) {
+            System.out.println("No remaining tasks.");
+            return;
+        }
+        // Print from top of stack down to the bottom
+        for (int i = tasks.size() - 1; i >= 0; i--) {
+            tasks.get(i).display();
+        }
+    }
+}
+public class Task {
+    private int taskId;
+    private String description;
+
+    public Task(int taskId, String description) {
+        this.taskId = taskId;
+        this.description = description;
+    }
+
+    public int getTaskId() {
+        return taskId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void display() {
+        System.out.println("Task ID: " + taskId + ", Description: " + description);
+    }
+}
+// Q8. Task management simulated with Stack<Task>.
+public class Main {
+    public static void main(String[] args) {
+        TaskManager manager = new TaskManager();
+
+        System.out.println("--- Pushing tasks ---");
+        manager.pushTask(new Task(1, "Write lab report"));
+        manager.pushTask(new Task(2, "Complete assignment"));
+        manager.pushTask(new Task(3, "Prepare for viva"));
+        manager.pushTask(new Task(4, "Push code to GitHub"));
+
+        System.out.println("\n--- Remaining tasks (top first) ---");
+        manager.displayRemaining();
+
+        System.out.println("\n--- Popping completed tasks ---");
+        manager.popTask();
+        manager.popTask();
+
+        System.out.println("\n--- Remaining tasks (top first) ---");
+        manager.displayRemaining();
+    }
+}
