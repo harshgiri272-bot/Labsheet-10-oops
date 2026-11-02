@@ -1,0 +1,63 @@
+public class Product implements Comparable<Product> {
+    private int id;
+    private String name;
+    private double price;
+
+    public Product() {
+        this(0, "Unknown", 0.0);
+    }
+
+    public Product(int id, String name, double price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    // Sort by price. If two products cost the same, fall back to id so that
+    // TreeSet does not treat them as duplicates and silently drop one.
+    @Override
+    public int compareTo(Product other) {
+        int result = Double.compare(this.price, other.price);
+        if (result == 0) {
+            result = Integer.compare(this.id, other.id);
+        }
+        return result;
+    }
+
+    public void display() {
+        System.out.println("ID: " + id + ", Name: " + name + ", Price: " + price);
+        import java.util.TreeSet;
+
+// Q4. TreeSet keeps Product objects sorted by price.
+public class Main {
+    public static void main(String[] args) {
+        TreeSet<Product> products = new TreeSet<>();
+
+        products.add(new Product(1, "Laptop", 55000.00));
+        products.add(new Product(2, "Mouse", 499.99));
+        products.add(new Product(3, "Keyboard", 1299.50));
+        products.add(new Product(4, "Monitor", 12999.00));
+        products.add(new Product(5, "Headphones", 2499.00));
+        products.add(new Product(6, "Webcam", 2499.00));   // same price as Headphones
+
+        System.out.println("Products in sorted order (by price):");
+        for (Product p : products) {
+            p.display();
+        }
+
+        System.out.println("\nCheapest product : " + products.first().getName());
+        System.out.println("Costliest product: " + products.last().getName());
+    }
+}}
