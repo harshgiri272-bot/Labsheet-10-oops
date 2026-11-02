@@ -1,0 +1,122 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class DepartmentManager {
+    private ArrayList<Department> departments = new ArrayList<>();
+    private HashMap<Department, List<Teacher>> teachersByDept = new HashMap<>();
+
+    public void addDepartment(Department d) {
+        departments.add(d);
+        teachersByDept.put(d, new ArrayList<>());
+        System.out.println("Added department: " + d.getDeptName());
+    }
+
+    public void addTeacher(Department d, Teacher t) {
+        List<Teacher> list = teachersByDept.get(d);
+        if (list == null) {
+            System.out.println("Department not found: " + d.getDeptName());
+            return;
+        }
+        list.add(t);
+        System.out.println("Added teacher " + t.getTeacherName() + " to " + d.getDeptName());
+    }
+
+    public void displayAll() {
+        // Iterate the ArrayList so departments print in the order they were added
+        for (Department d : departments) {
+            d.display();
+            List<Teacher> list = teachersByDept.get(d);
+            if (list.isEmpty()) {
+                System.out.println("  (no teachers)");
+            } else {
+                for (Teacher t : list) {
+                    t.display();
+                }
+            }
+            System.out.println();
+        }
+    }
+}
+import java.util.Objects;
+
+public class Department {
+    protected int deptId;
+    protected String deptName;
+
+    public Department(int deptId, String deptName) {
+        this.deptId = deptId;
+        this.deptName = deptName;
+    }
+
+    public int getDeptId() {
+        return deptId;
+    }
+
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void display() {
+        System.out.println("Department ID: " + deptId + ", Name: " + deptName);
+    }
+
+    // equals() and hashCode() let Department work properly as a HashMap key
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Department)) return false;
+        return this.deptId == ((Department) o).deptId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(deptId);
+    }
+}
+public class Teacher extends Department {
+    private int teacherId;
+    private String teacherName;
+
+    public Teacher(int deptId, String deptName, int teacherId, String teacherName) {
+        super(deptId, deptName);
+        this.teacherId = teacherId;
+        this.teacherName = teacherName;
+    }
+
+    public int getTeacherId() {
+        return teacherId;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    @Override
+    public void display() {
+        System.out.println("  Teacher ID: " + teacherId + ", Name: " + teacherName + " (Dept: " + deptName + ")");
+    }
+}
+// Q10. ArrayList<Department> + HashMap<Department, List<Teacher>> with inheritance.
+public class Main {
+    public static void main(String[] args) {
+        DepartmentManager manager = new DepartmentManager();
+
+        Department cs = new Department(1, "Computer Science");
+        Department math = new Department(2, "Mathematics");
+        Department physics = new Department(3, "Physics");
+
+        System.out.println("--- Adding departments ---");
+        manager.addDepartment(cs);
+        manager.addDepartment(math);
+        manager.addDepartment(physics);
+
+        System.out.println("\n--- Adding teachers ---");
+        manager.addTeacher(cs, new Teacher(1, "Computer Science", 201, "Dr. Sharma"));
+        manager.addTeacher(cs, new Teacher(1, "Computer Science", 202, "Prof. Gupta"));
+        manager.addTeacher(math, new Teacher(2, "Mathematics", 203, "Dr. Verma"));
+
+        System.out.println("\n--- Teachers under each department ---");
+        manager.displayAll();
+    }
+}
